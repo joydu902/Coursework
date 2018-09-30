@@ -83,8 +83,7 @@ since we need to create two attributes and two methods in order to satisfy each 
 
 ### Solution:
 First I will extract interface from this class and called IWareHouseManager that contains some certain duplicate
-methods, leave those methods unimplemented. Then create two subclass pickerWareHouseManager and
-SequencerWareHouseManager to implement this interface.
+methods, leave those methods unimplemented. Then create two subclass pickerWareHouseManager and SequencerWareHouseManager to implement this interface.
 
 ## Code Smell: Dead Code
 
