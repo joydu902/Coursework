@@ -4,7 +4,7 @@ public class Fruit {
 
     public Fruit(String type) {
         this.type = type;
-        this.price = 6;
+        this.price = 13;
     }
 
     public Fruit(String type, double price) {
