@@ -1,0 +1,74 @@
+class AppList:
+    def __init__(self):
+        self.apps = {}
+
+    def add_app(self, name, genre) -> None:
+        """
+        >>> a = AppList()
+        >>> a.add_app("Flappy Bird", "Arcade")
+        >>> a.add_app("1024", "Puzzle")
+        """
+        self.apps[name] = genre
+
+    def get_apps_by_genre(self, genre) -> list:
+        """
+        >>> a = AppList()
+        >>> a.add_app("Flappy Bird", "Arcade")
+        >>> a.add_app("1024", "Puzzle")
+        >>> a.get_apps_by_genre("Arcade")
+        ['Flappy Bird']
+
+        """
+        app_by_genre = []
+        for app in self.apps:
+            if self.apps[app] == genre:
+                app_by_genre.append(app)
+
+        app_by_genre.sort()
+        return app_by_genre
+
+    def get_all(self) -> list:
+        """
+        >>> a = AppList()
+        >>> a.add_app("Frogger", "Arcade")
+        >>> a.add_app("Flappy Bird", "Arcade")
+        >>> a.get_apps_by_genre("Arcade")
+        ['Flappy Bird', 'Frogger']
+        """
+        apps = list(self.apps.keys())
+        apps.sort()
+        return apps
+
+    def __str__(self) -> str:
+        """
+        >>> a = AppList()
+        >>> a.add_app("Flappy Bird", "Arcade")
+        >>> a.add_app("1024", "Puzzle")
+        >>> a.add_app("Frogger", "Arcade")
+        >>> print(a)
+        Arcade: Flappy Bird, Frogger
+        Puzzle: 1024
+
+
+        """
+        genre_list = {}
+        for app in self.apps:
+            genre = self.apps[app]
+            if genre in genre_list:
+                genre_list[genre].append(app)
+            else:
+                genre_list[genre] = [app]
+
+        s1 = []
+        for genre in genre_list:
+            s = ", ".join(genre_list[genre])
+            s2 = "{}: {}".format(genre, s)
+            s1.append(s2)
+        return "\n".join(s1)
+
+
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

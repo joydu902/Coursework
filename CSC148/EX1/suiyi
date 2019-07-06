@@ -1,0 +1,30 @@
+class ShopCatalogue:
+    def __init__(self, name, price, quantity):
+        self._name = name
+        self._price = price
+        self._quantity = quantity
+
+    def get_values(self):
+        return self._price
+
+    def set_price(self,price):
+        self._price = price
+
+    def set_quantity(self, quantity):
+        self._quantity= quantity
+
+    def __str__(self):
+        return "{} (*{}) for {:.2f} each".format(self._name, self._quantity, self._price)
+
+    def add_item(self, name, price, quantity):
+        if name in self.items:
+            self.items[name][0] += quantity
+        self.items[name] = [name, quantity, price]
+
+    below_list = []
+    for name in self.items:
+        if (self.items[name][1] < price and self.items[name][0] > 0):
+            below_list.append(name)
+        else:
+            below_list = []
+

@@ -1,0 +1,272 @@
+---
+title:  Assignment  3
+author: |
+  | Last name: Du
+  | First name: Min
+  | Student ID: 1002602230
+  | Course section: STA302H1F-Summer 2017
+output: pdf_document
+header-includes: \usepackage{color,amsmath}
+fontsize: 12pt
+---
+
+
+
+# \textcolor{blue}{Introduction} 
+Observational studies have suggested that precipitation,monthly average temperature, family status and other environmental fators might affect The death rate. Study subjects were variety of places in 1960. The aim of my data analysis is to find the variables that are important in predicting the response variables(The Death Rate) and construct a regression fits the data.
+
+\textbf{The data set consists of 60 observations on 9 variables(8 predictor variable and 1 response variable.The variables are:}
+\newline AVP: the average annual precipitation (inch)
+\newline MPH: the number of members per household in 1960
+\newline YSP22: the number of years of schooling for persons over 22 in 1960
+\newline HFK: the number of households with fully equipped kitchens
+\newline NFL3: the number of families with an income less than us dollar 3000
+\newline SDP: the relative pollution of Sulfur Dioxide
+\newline HP: relative pollution potential of hydrocarbons
+\newline DA: percent relative humidity, annual average at 1pm.
+\newline Response variable: The death rate
+\newline
+\newline I expect The Death rate to be strongly related to HFK(the number of households with fully equipped kitchens), NFL3(poor families),SDP(the relative pollution of Sulfur Dioxide) and  DA(percent relative humidity, annual average at 1pm). Slightly related to AVP(the average annual precipitation),HP(relative pollution potential of hydrocarbons).Do not have linear regression with MPH(the number of members per household), YSP22(the number of years of schooling for persons over 22).
+
+\newpage
+# \textcolor{blue}{Analysis} 
+\textbf{Regression between Predict Variables and Response Variable}(8 Simple linear regressions, $Y_i$=$b_0$+$b_1$$x_1$,Death Rate is $Y_i$)(code given in appendix)
+
+list of table                      |     p-value for $H_0$:$\beta_1$=0 |       
+:----------------------------------|:---------------------------------:|
+AVP  | 3.22e-05
+MPH |  0.00507
+YSP22 | 3.02e-05
+HFK | 0.000672
+NFL3 | 0.001124
+SDP | 0.000692
+HP | 0.1755
+DA | 0.6819
+
+According to above r-code. MPH,HFK,NFL3,SDP has moderate evidence of relationship with response variable. AVP and YSP22 has strong evidence of relationship with response variable.There is no evidence that the coefficients of HP and DA are different from 0.
+
+
+\textbf{First Mutiple Regression}(Full Model)(code given in appendix)
+
+list of table  | estmate           |         std.error|         t-value|          Pr(>|t|)|
+:--------------|:-----------------:|:----------------:|:--------------:|:----------------:|
+(Intercept)|648.79956|267.29044|2.427|0.01878  
+AVP|2.50851 |0.81884|3.063|0.00349  
+MPH|83.85424|49.00100|1.711|0.09311  
+YSP22|-1.88113|9.31822|-0.202|0.84082    
+HFK|-1.83788|1.77717|-1.034|0.30594    
+NFL3|1.59976|2.06984|0.773|0.44316    
+SDP|0.47417|0.10173|4.661|2.3e-05 
+HP|0.03531|0.08540|0.413|0.68099    
+DA|0.75991|1.05024|0.724|0.47264
+
+According to the above table, there is strong evidence that the coefficient of SDP
+is non-zero for a model including all of the other predictor variables. 
+
+There is moderate evidence that the coefficients of AVP is non-zero for a model including all of the other predictor variables. 
+
+There is weak evidence that the coefficients of MPH is non-zero for a model including all of the other predictor variables. 
+
+There is no evidence that the coefficients of  YSP22, HFK, NFL3, HP and DA are different from 0. 
+
+From this model, It seems that important predictors are SDP(the relative pollution of Sulfur Dioxide),AVP(the average annual precipitation) and MPH(Household size in1960). We will try another mutiple regression by removing YSP22, HFK, NFL3, HP and DA. 
+
+\textbf{Second Mutiple Regression After Removing YSP22, HFK, NFL3, HP and DA}(Reduced Model)(code given in appendix)
+
+list of table  | estmate           |         std.error|         t-value|            Pr(>|t|)|
+:--------------|:-----------------:|:----------------:|:--------------:|:------------------:|
+(Intercept)|457.25325|136.88389|3.340|0.00149
+AVP|3.12122|0.58821|5.306|1.98e-06  
+MPH|104.53931|43.17468|2.421|0.01873  
+SDP| 0.47141|0.08938|5.274|2.22e-06
+
+(1)According to the above table, we can see all of their p-values are smaller than $\alpha$ = 0.05, which means we have evidence to show all of them have linear regression with the Death Rate in this model.
+
+(2)Taking ANOVA of both full and reduced moedels.$H_0$: There is no difference between full model and reduced model. We get Pr(>F)=0.382, which means full model and redueced model are different. Reduced model is better.(code given in appendix)
+
+(3)According to correlation plots between 9 variables (code given in appendix), we can see the first 6 varaibles have strong correlation between each other.
+
+(4)According to correlation plots between 9 variables, COR(AVP,MPH)=0.26,COR(AVP,SDP)=-0.1069,COR(MPH,SDP)=-0.004.There is a weak postive correlation between AVP and MPH, no correlation between AVP & SDP, MPH & SDP. 
+
+(5)Taking linear regression between AVP and SDP, we get mutiple R squared=0.1143, VIF =1.00, which means they are linearly independent. Same as AVP and MPH, R squared=0.0694, VIF =1.00; MPH and SDP,R squared=1.668e-05, VIF =1.00.(code all given in appendix) All of them are linearly independent to each other.
+
+(6)Double check this mutiple linear regression for Gauss Markov Assumption. (plot given in appendix).
+
+Regression is linear.
+
+Error terms are independent.(Because error terms are relatively uncorrelated.)
+
+Error terms relatively have a constant variance.
+
+Error terms are normally distributed.(Because the normal QQ plot is a straight line.)
+
+No outliers.(No points are far away from the line in the plot.)
+
+No any important predictor variables is ommitted from the model.
+
+The above 6 points illustrate that reduced model is a good linear regression model, which is better than the full model.
+
+\newpage
+# \textcolor{blue}{Conclusion}
+For the full mutiple regression model, we find that most of the variables are greater than 0.05, then we remove the variables that are apparently greater than 0.05. Thus, we get our reduced model. According to the table of the reduced model, all the p-values are smaller than 0.05, also according to ANOVA of both full and reduced model, we get result that there is difference between reduced model and full model, which illustrates again the reduced model is better than the full model. Moreover, we find that AVP,SDP,MPH almost have no correlation between eath other, and they mutually linearly independent. Finally, I double check the reduced model for GM assumption.
+
+AVP(the average annual precipitation (inch)), SDP(the relative pollution of Sulfur Dioxide) and MPH(the number of members per household in 1960) construct a good mutiple regression model for the Death Rate. The environmental factors and household size affect the Death rate most.
+
+\textbf{The Death Rate = 457.25325 + 3.12122 * AVP + 0.47141*SDP +104.5393*MPH}
+457.25325 means when AVP, SDP, MPH equals to 0, the mean value of Death Rate equals to 457.25325.
+
+3.12122 means the change in the mean value of the Death Rate when AVP change by one unit and all other predictor variables are held constant.
+
+0.47141 means the change in the mean value of the Death Rate when SDP change by one unit and all other predictor variables are held constant.
+
+104.539 means the change in the mean value of the Death Rate when MPH change by one unit and all other predictor variables are held constant.
+
+Those numbers illustrate that MPH affects the response variable(the Death Rate) most. Then AVP ,SDP.
+
+
+\newpage
+# \textcolor{blue}{Reference}
+Richard Gunst, Robert Mason,
+Regression Analysis and Its Applications: a data-oriented approach,
+Dekker, 1980, pages 370-371.
+ISBN: 0824769937.
+
+Gary McDonald, Richard Schwing,
+Instabilities of regression estimates relating air pollution to mortality,
+Technometrics,
+Volume 15, Number 3, pages 463-482, 1973.
+
+Helmut Spaeth,
+Mathematical Algorithms for Linear Regression,
+Academic Press, 1991,
+ISBN 0-12-656460-4.
+
+a3 = read.csv("/Users/Joy/Desktop/STA302/A3/A3 JOY DATA zhiqian.csv",header=TRUE)
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the average annual precipitation
+a3 = read.csv("/Users/Joy/Desktop/STA302/A3/A3 JOY DATA zhiqian.csv",header=TRUE)
+lm_fit1 = lm(a3$DEATH.RATE ~ a3$AVP)
+summary(lm_fit1)
+
+```
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the number of members per household
+lm_fit3 = lm(a3$DEATH.RATE ~ a3$MPH)
+summary(lm_fit3)
+
+```
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the number of years of schooling for persons over 22 m
+lm_fit4 = lm(a3$DEATH.RATE ~ a3$YSP22)
+summary(lm_fit4)
+
+```
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the number of households with fully equipped kitchens
+lm_fit5 = lm(a3$DEATH.RATE ~ a3$HFK)
+summary(lm_fit5)
+
+```
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the number of families with an income less than $3000 
+lm_fit6 = lm(a3$DEATH.RATE ~ a3$NFL3)
+summary(lm_fit6)
+
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Regression between Death Rate and the sulfur dioxide pollution index
+lm_fit7 = lm(a3$DEATH.RATE ~ a3$SDP)
+summary(lm_fit7)
+
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Mutiple Regression
+lm_fit8 = lm(a3$DEATH.RATE ~ a3$AVP + a3$MPH + a3$YSP22 + a3$HFK + a3$NFL3 + a3$SDP + a3$HP + a3$DA)
+summary(lm_fit8)
+
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Reduced Model 
+lm_fit9 = lm(a3$DEATH.RATE ~   a3$MPH+ a3$SDP+a3$AVP  )
+summary(lm_fit9)
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+anova(lm_fit9,lm_fit8)
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#correlation plots between 9 variables
+mycor <- function ( data ){
+# ------------ put histograms on the diagonal -----------------
+panel.hist <- function (x , ...) {
+  usr <- par ("usr") ; on.exit ( par ( usr ))
+  par ( usr = c( usr [1:2] , 0, 1.5) )
+  h <- hist (x , plot = FALSE )
+  breaks <- h$ breaks ; nB <- length ( breaks )
+  y <- h$ counts ; y <- y/ max (y)
+  rect ( breaks [ - nB ] , 0, breaks [ -1] , y , col ="lavender", ...)}
+panel.cor <- function (x , y , digits =4 , prefix ="", cex.cor , ...) {
+    usr <- par ("usr") ;
+    on.exit ( par ( usr ))
+    par ( usr = c(0 , 1 , 0 , 1) )
+    txt1 <- format ( cor (x ,y) , digits = digits )
+    txt2 <- format (cor.test (x ,y)$p.value , digits = digits )
+    text (0.5 ,0.5 , paste ("r=",txt1 , "\n P. val =", txt2 ) , cex =0.8)}
+pairs (data , lower.panel = panel.cor , cex =0.7 , pch = 21 , bg =" steelblue ", diag.panel = panel.hist , cex.labels = 1.1 , font.labels = 0.9 , upper.panel = panel.smooth )
+   }
+
+mycor(a3[,c(9,1:8)])
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Find Multiple R-squared of SDP,AVP
+summary(lm(a3$SDP ~ a3$AVP))
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Find Multiple R-squared of MPH,AVP
+summary(lm(a3$MPH ~ a3$AVP))
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Find Multiple R-squared of SDP,MPH
+summary(lm(a3$SDP ~ a3$MPH))
+```
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+#Residual plot
+plot(lm_fit9)
+```
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

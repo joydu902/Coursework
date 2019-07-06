@@ -1,0 +1,19 @@
+def count_odd_above(t, n):
+    """
+    Return the number of nodes with depth less than n that have odd values.
+    Assume t’s nodes have integer values.
+    @param Tree t: tree to list values from
+    @param int n: depth above which to list values
+    @rtype: int
+    >>> t1 = Tree(4)
+    >>> t2 = Tree(3)
+    >>> t3 = Tree(5, [t1, t2])
+    >>> count_odd_above(t3, 1)
+    1
+    """
+
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

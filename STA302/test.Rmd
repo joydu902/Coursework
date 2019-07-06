@@ -1,0 +1,105 @@
+---
+title: "Rmarkdown Lab"
+author: "|"
+  | Last name: Type down your lastname here
+  | First name: Type down your firstname here
+  | Student ID: 0000000
+  | Course section: STA302H1F-L0101/L5101
+date: "May 10th, 2017"
+output:
+  html_document: default
+  pdf_document: default
+fontsize: 10pt
+---
+# \textcolor{red}{ Q1 - Setting up}
+## How to use R markdown to produce your assignment solution
+
+Please watch the following short YouTube Videos to set up all you need.
+
+- Install R and R studio:
+    - On Mac: \url{https://www.youtube.com/watch?v=GFImMj1lMRI}
+    - On Windows: \url{https://www.youtube.com/watch?v=MFfRQuQKGYg}
+    
+- First time to use R markdown in R studio: 
+    - \url{https://www.youtube.com/watch?v=bd0SCWpklmE}
+    
+- Produce PDF file from the given template test.rmd using R markdown
+    - Download test.Rmd file
+    - Open and Knit it in R studio (first time to use R markdown, it will ask you to download and install necessary R package, please say yes!)
+    - test.pdf should be produced, if no read the error message, ask google and fix it to make it happen! 
+- Split the test PDF into subfiles for question Q1, Q2 and Q3
+    - How to split a PDF file using google Chrome:
+        - Link: \url{https://www.youtube.com/watch?v=xdzqESKi4OU}
+    - On Mac OS using Preview application: 
+        - Link: \url{https://www.youtube.com/watch?v=zZjUTplOM-Y}
+- Receive an email with Crowdmark link for assignment submission (No submission of this test lab, but to help you get the idea of how to submit your solution on Crowdmark, see next page)
+    - Drag and drop your Q1 solution PDF to Q1 box
+    - Drag and drop your Q2 solution PDF to Q2 box
+    - Drag and drop your Q3 solution PDF to Q3 box 
+
+![Crowdmark submission](cm.png)   
+\newpage 
+
+# \textcolor{red}{Q2 - Load in data and analyze it}
+
+In the following, we will bring in a dataset and do some simple data summaries and plots. The box below executes R code that imports the data, manipulates the data, and adds some labels to some of the variables. 
+
+```{r,echo=TRUE,eval=TRUE}
+if (!require("knitr")) install.packages("knitr")
+
+library(knitr)
+# read in the file
+dat=read.table("http://www.montana.edu/rotella/documents/502/FawnsData.txt",header=TRUE)
+
+# check the data dimension
+dim(dat)
+# check the type of variables in this data
+str(dat)
+# have a look of row 4 and 7
+dat[c(4,7), ]
+# have a look of first 10 rows of column 1 and 3
+dat[1:10,c(1,3)]
+
+# drop 'freq' as this is always '1' in this dataset
+dat=subset(dat,select=-freq)
+
+# provide meaningful labels to the 0 & 1 values used for categorical variables
+# 'eh' is the encounter history, where 11=death & 10=survive
+dat$eh=factor(dat$eh,levels=c(11,10),labels=c("die","live")) 
+dat$area=factor(dat$area,levels=c(0,1),labels=c("cntrl","trmt"))
+dat$sex=factor(dat$sex,levels=c(0,1),labels=c("female","male"))
+
+# obtain summary statistics
+summary(dat)
+
+# look at the proportion lived and died 
+prop.table(table(dat$eh))
+prop.table(table(dat$eh,dat$area),margin=2)
+prop.table(table(dat$eh,dat$sex),margin=2)
+```
+
+\newpage
+#\textcolor{red}{ Q3 - Plot the data and create a table}
+## Q3.1
+Produce a satter plot of Mass versus Ratio in the data, different colors are applied based on gender information. 
+```{r,echo=TRUE,eval=TRUE,warning=FALSE}
+if (!require("ggplot2")) install.packages("ggplot2")
+library(ggplot2)
+# for each R chunk, you need to import the data again
+dat=read.table("http://www.montana.edu/rotella/documents/502/FawnsData.txt",header=TRUE) 
+myplot <- ggplot(dat, aes(x=mass, y=radio,color=sex)) +geom_point()+
+    theme(legend.position=c(0.75,0.25), legend.justification=c(1,0)) +
+    xlab("Body mass (kg)") + 
+    ylab("Radio")
+# print the plot
+myplot
+```
+
+## Q3.2: create a table
+
+ -| female  | male 
+ :-----------|:----------:|:-----------:
+ die | 0.4912281 | 0.6896552
+ live| 0.5087719 | 0.31034483
+
+

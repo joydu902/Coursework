@@ -1,0 +1,49 @@
+class Grade:
+    def __init__(self, value: any):
+        self._value = value
+
+    def get_value(self) -> any:
+        return self._value
+
+
+    def get_gpa(self) -> float:
+        raise NotImplementedError
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Grade):
+            return False
+        else:
+            return self.get_gpa() == other.get_gpa()
+
+class NumericGrade(Grade):
+    def get_gpa(self) -> float:
+        gpa = 0
+        if self._value >= 85:
+            gpa = 4.0
+        elif self._value >= 80:
+            gpa = 3.7
+        return gpa
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, NumericGrade):
+            super().__eq__(other)
+        else:
+            return self.get_value() == other.get_value()
+
+class LetterGrade(Grade):
+    def get_gpa(self) -> float:
+        gpa = 0
+        if self._value == "A":
+            gpa = 4.0
+        if self._value == "A-":
+            gpa = 3.7
+        return gpa
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, LetterGrade):
+            super().__eq__(other)
+        else:
+            return self.get_value() == other.get_value()
+
+
+

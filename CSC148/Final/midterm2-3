@@ -1,0 +1,448 @@
+from typing import List, Union, Type, Any, Callable
+
+class Tree:
+    """
+    A class representing a Tree.
+
+    value - The value of the root of this Tree.
+    children - The subtrees of this Tree.
+    """
+    value: Any
+    children: List['Tree']
+
+    def __init__(self, value: Any, children: List['Tree'] = None) -> None:
+        """
+        Initialize this Tree with the value value and children children.
+        """
+        self.value = value
+        self.children = children[:] if children else []
+
+    # def level_sums(self) -> List[int]:###############
+    #     """
+    #     Return a list containing the sum of each level of this Tree.
+    #
+    #     >>> t = Tree(10, [Tree(3),
+    #     ...               Tree(4, [Tree(5),
+    #     ...                        Tree(6, [Tree(7)])]),
+    #     ...               Tree(8, [Tree(1, [Tree(2)])])])
+    #     >>> t.level_sums()
+    #     [10, 15, 12, 9]
+    #     """
+    #     # This is just 1 of many different approaches. Other approaches include:
+    #     #    - Writing a helper function to get the items at each depth of self
+    #     #      and returning the sum of each of those depths.
+    #     #      (You would also need to get the max depth too; and just get all
+    #     #       items from depth 0 to max depth.)
+    #     #      See level_sums_using_depth() for this solution, along with its
+    #     #      helper functions get_values_at_depth and get_max_depth.
+    #     #
+    #     #    - Using a Queue to get the items in level order; you would need
+    #     #      to indicate the end of each level though (i.e. with a dummy
+    #     #      value)
+    #     #      See level_sums_using_queue() for this solution.
+    #
+    #     # Get the sums from each of the children
+    #     child_sums = [child.level_sums() for child in self.children]
+    #
+    #     # Merge all of those sums into one list
+    #     all_sums = []
+    #     for child in child_sums:
+    #         for i in range(len(child)):
+    #             if i < len(all_sums):
+    #                 all_sums[i] += child[i]
+    #             else:
+    #                 all_sums.append(child[i])
+    #
+    #     # Add self.value to the front of all of those sums.
+    #     return [self.value] + all_sums
+
+    def level_sums_using_depth(self) -> List[int]:
+        """
+        Return a list containing the sum of each level of this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.level_sums_using_depth()
+        [10, 15, 12, 9]
+        """
+        max_depth = self.get_max_depth()
+        result = []
+        for i in range(max_depth + 1):
+            result.extend([sum(self.get_values_at_depth(i))])
+        return result
+
+
+    def get_max_depth(self) -> int:
+        """
+        Return the maximum depth of this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_max_depth()
+        3
+        """
+        result = []
+        if self.children == []:
+            return 0
+        else:
+            for child in self.children:
+                result += [child.get_max_depth()]
+            return 1 + max(result)
+
+    def get_values_at_depth(self, depth: int) -> List[Any]:
+        """
+        Return the values at depth depth in this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_values_at_depth(2)
+        [5, 6, 1]
+        """
+        result = []
+        if depth == 0:
+            return [self.value]
+        else:
+            for child in self.children:
+                result += child.get_values_at_depth(depth - 1)
+            return result
+
+    def level_sums_using_queue(self) -> List[int]:
+        """
+        Return a list containing the sum of each level of this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.level_sums_using_queue()
+        [10, 15, 12, 9]
+        """
+        level = 0
+        all_level =[]
+        q = [self, 'End']
+        while q:
+            item = q.pop(0)
+            if item == 'End':
+                all_level.append(level)
+                level = 0
+                if q:
+                    q.append('End')
+            else:
+                level += item.value
+                for child in item.children:
+                    q.append(child)
+        return all_level
+
+        # q = [self, 'End']
+        # sums = 0
+        # all_level =[]
+        # while q:
+        #     item = q.pop(0)
+        #     if item == 'End':
+        #         all_level.append(sums)
+        #         sums = 0
+        #         if q:
+        #             q.append('End')
+        #     else:
+        #         sums += item.value
+        #         for child in item.children:
+        #             q.append(child)
+        # return all_level
+        #
+
+    def get_condition_passers(self, f: Callable) -> List[Any]:
+        """
+        Return all of the items in self that pass f in pre-order.
+
+        >>> def less_than_7(val):
+        ...     return val < 7
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_condition_passers(less_than_7)
+        [3, 4, 5, 6, 1, 2]
+        """
+        if f(self.value):
+            result = [self.value]
+        else:
+            result = []
+        for child in self.children:
+            result += child.get_condition_passers(f)
+        return result
+
+    def get_condition_passers_postorder(self, f: Callable) -> List[Any]:
+        """
+        Return all of the items in self that pass f in post-order.
+
+        >>> def less_than_7(val):
+        ...     return val < 7
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_condition_passers_postorder(less_than_7)
+        [3, 5, 6, 4, 2, 1]
+        """
+        rr = []
+        if f(self.value):
+            result = [self.value]
+        else:
+            result = []
+        for child in self.children:
+            rr += child.get_condition_passers_postorder(f)
+        return rr + result
+
+    def get_condition_passers_levelorder(self, f: Callable) -> List[Any]:
+        """
+        Return all of the items in self that pass f in pre-order.
+
+        >>> def less_than_7(val):
+        ...     return val < 7
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_condition_passers_levelorder(less_than_7)
+        [3, 4, 5, 6, 1, 2]
+        """
+        result = []
+        q = [self]
+        while q:
+            item = q.pop(0)
+            if f(item.value):
+                result += [item.value]
+            for child in item.children:
+                q.append(child)
+        return result
+
+
+
+        # q = [self]
+        # passers = []
+        # while q:
+        #     item = q.pop(0)
+        #     if f(item.value):
+        #         passers.append(item.value)
+        #     for child in item.children:
+        #         q.append(child)
+        # return passers
+
+    def get_longest_path(self) -> List[Any]:
+        """
+        Return the longest path in this Tree from the root to a leaf.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_longest_path()
+        [10, 4, 6, 7]
+        """
+        paths = []
+        if not self.children:
+            return [self.value]
+        for child in self.children:
+            paths += [child.get_longest_path()]
+
+        longest_path = paths[0]
+        for path in paths:
+            if len(path) > len(longest_path):
+                longest_path = path
+        return [self.value] + longest_path
+
+
+        # paths = []
+        # if self.children == []:
+        #     return [self.value]
+        #
+        # for child in self.children:
+        #     paths += [child.get_longest_path()]
+        #
+        # longest_path = paths[0]
+        # for path in paths:
+        #     if len(path) > len(longest_path):
+        #         longest_path = path
+        #
+        # return [self.value] + longest_path
+
+    def all_values_in_tree(self, values: List[Any]) -> bool:
+        """
+        Return True iff all values in values are in this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.all_values_in_tree([3, 1, 4])
+        True
+        >>> t.all_values_in_tree([3, 9])
+        False
+        """
+        if self.value in values:
+            values.remove(self.value)
+        for child in self.children:
+            child.all_values_in_tree(values)
+        return values == []
+
+    def count_strings_with_length(self) -> dict:
+        """
+        Return a dictionary mapping the length of each word in this Tree
+        to the number of times that length appears.
+
+        >>> t = Tree('cat', [Tree('a'),
+        ...                  Tree('dog', [Tree('b'),
+        ...                               Tree('no', [Tree('yes')])])])
+        >>> t.count_strings_with_length()
+        {3: 3, 1: 2, 2: 1}
+        """
+        new_dict = {len(self.value):1}
+        for child in self.children:
+            lengths = child.count_strings_with_length()
+            for key in lengths:
+                if key in new_dict:
+                    new_dict[key] += lengths[key]
+                else:
+                    new_dict[key] = lengths[key]
+        return new_dict
+
+    def return_values_with_type(self, t: Type) -> List[Any]:
+        """
+        Return all of the values in this Tree that have type t.
+
+        >>> t = Tree(1, [Tree(3),
+        ...              Tree('yes', [Tree('b'),
+        ...                           Tree(2)])])
+        >>> t.return_values_with_type(int)
+        [1, 3, 2]
+        """
+        if isinstance(self.value, t):
+            result = [self.value]
+        else:
+            result = []
+
+        for child in self.children:
+            result.extend(child.return_values_with_type(t))
+
+        return result
+
+    def get_max(self) -> int:
+        """
+        Return largest int in this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_max()
+        10
+        """
+        result = [self.value]
+        for child in self.children:
+            result.extend([child.get_max()])
+        return max(result)
+
+    def get_min(self) -> int:
+        """
+        Return smallest int in this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_min()
+        1
+        """
+        result = [self.value]
+        for child in self.children:
+            result.extend([child.get_min()])
+        return min(result)
+
+    def all_true(self) -> bool:
+        """
+        Return True if all booleans in this Tree are True.
+
+        >>> t = Tree(True, [Tree(True),
+        ...                 Tree(True, [Tree(True),
+        ...                             Tree(False, [Tree(True)])]),
+        ...                 Tree(True, [Tree(False, [Tree(True)])])])
+        >>> t.all_true()
+        False
+        """
+        if not self.value:
+            return False
+
+        result = []
+        for child in self.children:
+            result.extend([child.all_true()])
+        return all(result)
+
+    def any_true(self) -> bool:
+        """
+        Return True if any booleans in this Tree are True.
+
+        >>> t = Tree(True, [Tree(True),
+        ...                 Tree(True, [Tree(True),
+        ...                             Tree(False, [Tree(True)])]),
+        ...                 Tree(True, [Tree(False, [Tree(True)])])])
+        >>> t.any_true()
+        True
+        """
+        if self.value:
+            return True
+
+        result = []
+        for child in self.children:
+            result.extend([child.any_true()])
+        return any(result)
+
+    def count_occurrences(self, value: Any) -> int:########
+        """
+        Return the number of times value occurs in this Tree.
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.count_occurrences(3)
+        1
+        """
+        if self.value == value:
+            count = 1
+        else:
+            count = 0
+        for child in self.children:
+            count += child.count_occurrences(value)
+        return count
+
+    def get_internal_values(self) -> List[Any]:
+        """
+        Return a list of all of the values of the internal nodes of this Tree.
+        (In pre-order)
+
+        >>> t = Tree(10, [Tree(3),
+        ...               Tree(4, [Tree(5),
+        ...                        Tree(6, [Tree(7)])]),
+        ...               Tree(8, [Tree(1, [Tree(2)])])])
+        >>> t.get_internal_values()
+        [10, 4, 6, 8, 1]
+        """
+        if self.children:
+            result = [self.value]
+        else:
+            result = []
+        for child in self.children:
+            result.extend(child.get_internal_values())
+        return result
+
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

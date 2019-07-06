@@ -1,0 +1,8 @@
+public class myclass{
+    public static void main(String[] args){
+        Person j = new Person('john');
+        j.setAge(20);
+
+
+    }
+}

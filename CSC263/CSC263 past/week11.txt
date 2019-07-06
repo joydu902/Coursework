@@ -1,0 +1,212 @@
+============================================================================
+CSC 263                 Lecture Summary for Week 11              Winter 2015
+============================================================================
+
+READING: Sections 21.1, 21.2, 21.3.
+SELF-TEST: Exercise 21.2-2.
+
+-------------
+Disjoint Sets
+-------------
+
+Disjoint Set ADT:
+
+  - Objects: Collection of nonempty disjoint sets S = {S_1,S_2,...,S_k} --
+    each S_i is a nonempty set that has _no_ element in common with any
+    other S_j (S_i n S_j = {} for all i != j). Each set is identified by a
+    unique element called its "representative".
+
+  - Operations:
+
+      . MAKE-SET(x): Given element x that does not already belong to one of
+        the sets, create a new set {x} that contains only x (and assign x as
+        the representative of that new set).
+
+      . FIND-SET(x): Given element x, return the representative of the set
+        that contains x (or NIL if x does not belong to any set).
+
+      . UNION(x,y): Given two distinct elements x and y, let S_x be the set
+        that contains x and S_y be the set that contains y. Form a new set
+        consisting of S_x u S_y and remove S_x and S_y from the collection
+        (since all the sets must be disjoint). Pick a representative for the
+        new set -- usually (but not necessarily) one of the representatives
+        for S_x or S_y. Note: if both x and y belong to the same set already
+        (S_x = S_y), operation has no effect.
+
+Applications:
+
+  - In Kruskal's algorithm, use disjoint set ADT to keep track of connected
+    components:
+
+        KRUSKAL-MST(G=(V,E),w:E->R)
+            T <- {}
+            sort edges so w(e_1) <= w(e_2) <= ... <= w(e_m)
+            for each v in V:
+                MAKE-SET(v)
+            for i <- 1 to m:
+                # let (u_i,v_i) = e_i
+                if FIND-SET(u_i) != FIND-SET(v_i):
+                    UNION(u_i,v_i)
+                    T <- T u {e_i}
+
+Data Structures for Disjoint Sets:
+
+ 1. Circularly-linked list.
+
+    Each set = one circularly-linked list; first element = representative.
+
+      - MAKE-SET(x) takes time O(1): create new linked list with element x.
+
+      - UNION(x,y) takes time for FIND-SET(x) and FIND-SET(y), plus time
+        O(1) for the actual union, by changing the 'next' pointers of the
+        first elements in each set.
+        (Note that from now on when we talk about the complexity for UNION,
+         we aren't including the cost of FIND-SET(x) and FIND-SET(y). Assume
+         that if we need the reps for union, we keep them around from when
+         we called FIND-SET to decide if we would need to do the UNION.)
+
+      - FIND-SET(x) takes time Omega(length of list): in the worst-case,
+        must traverse every link in a list before finding first element.
+
+    Worst-case sequence complexity for m operations? One "bad" sequence:
+    m/4 MAKE-SETs, m/4-1 UNIONs (yields one list with m/4 elements), m/2
+    FIND-SETs on second element in the list. Each FIND-SET requires time
+    Omega(m/4), so total time is Omega(m^2).
+    Also, since the number of elements in the structure at any point in
+    any sequence of m operations is <= m, the complexity of each operation
+    in a sequence is O(m) so the total time is O(m^2).
+
+ 2. Linked list with extra pointer to front.
+
+    Each set = linked list where each element stores pointer to next element
+    and pointer "back" to first element (representative).
+
+      - MAKE-SET(x) takes time O(1), as before.
+
+      - FIND-SET(x) now takes time O(1): follow the back pointer.
+
+      - UNION(x,y) takes time Omega(length of appended list): append one
+        list to the end of the other, and modify every back pointer of the
+        second list.
+
+    Worst-case sequence complexity for m operations: m/2+1 MAKE-SETs, m/2-1
+    UNIONs, always appending longer list to the end of single-element list.
+    Total time is Omega(m^2).
+
+ 3. Linked list with extra pointer to front and "union-by-weight".
+
+    Idea: during UNION, make sure shorter list appended to longer (requiring
+    fewer updated to back pointers). Details: like previous idea but also
+    keep track of number of elements in each list. MAKE-SET and FIND-SET not
+    affected (still take time O(1)), and when we perform UNION, append
+    smaller set to larger one. This is called "union-by-weight" (the
+    "weight" of a set is simply its size).
+
+    Worst-case sequence complexity for m operations: let n be the number
+    of MAKE-SET operations in the sequence (so there are never more than n
+    elements in total). For some arbitrary element x, we want to prove an
+    upper bound on the number of times that x's back pointer can be
+    updated. Note that this happens only when the set that contains x is
+    UNIONed with a set that is no smaller (because we only update back
+    pointers for the smaller set). This means that each time x's back
+    pointer is updated, the resulting set must have at least doubled in
+    size. Since there are no more than n elements in total in all the
+    sets, this means that x's back pointer cannot be updated more than
+    lg(n) times. And since this is true for every element x, the total
+    number of pointer updates during the entire sequence of operations is
+    O(n log n). The time for other operations is still O(1), and there
+    are m operations in total, so the total time for the entire sequence
+    is O(m + n log n).
+
+ 4. Trees.
+
+    Each set = "inverted" tree, where each element points to its parent only
+    -- root points back to itself. Representative = root. Note: trees are
+    _not_ necessarily binary: number of children of a node can be
+    arbitrarily large (or small).
+
+      - MAKE-SET(x) takes time O(1): create new tree with root x.
+
+      - UNION(x,y) takes time O(1): make root of one tree child of root of
+        other tree.
+
+      - FIND-SET(x) takes time O(depth of x): follow parent pointers back to
+        root of x's tree.
+
+    Important observation: We now have no way to ask "what are all the elements in the 
+    same set as x?" But we don't need that. The only operations we have to implement
+    are MAKE-SET, FIND-SET and UNION.
+
+    Worst-case sequence complexity for m operations: just like for the
+    linked list with back pointers but no size, we can create a tree that is
+    just one long chain with m/4 elements, so that FIND-SET takes time
+    Omega(m); if we perform m/2 FIND-SET operations, we get a sequence whose
+    total time is Omega(m^2).
+
+ 5. Trees with "union-by-weight".
+
+    As before, except also keep track of weight (i.e., size) of each tree
+    and always append smaller tree to larger one during UNION. Complexity of
+    MAKE-SET = O(1), and so is complexity of UNION (when one tree appended
+    to another, add the two weights for weight of the new tree).
+
+    Complexity of FIND-SET? During any sequence of m operations, n of which
+    are MAKE-SET, the maximum height of any tree is O(log n). (Proof is by
+    induction on the height h of the trees.) So running time of individual
+    FIND-SET is O(log n), and total time is O(m log n) for entire sequence.
+
+ 6. Trees with path compression.
+
+    During FIND-SET(x), keep track of nodes visited on path from x to root
+    of tree (use a stack or queue), and once the root is found, update
+    parent pointers of each node encountered to point directly to the root.
+    At most doubles running time of FIND-SET, but can speed up future
+    operations considerably.
+
+    In fact, possible to prove (but messy) that worst-case running time of a
+    single operation in a sequence, if there are n MAKE-SET operations (so
+    at most n-1 UNIONs) and f FIND-SET operations is
+
+       Theta( f log n / log(1+f/n) )      if f >= n
+
+       Theta( n + f log n )               if f < n
+
+    But we can do even better!
+
+ 7. Trees with "union-by-rank" and path compression.
+
+    With trees, the measure that matters most for running time is the height
+    of each tree, not its size. So, instead of using weight to decide how to
+    carry out UNION, we use "rank": an upper bound on the height of the tree
+    -- not always exactly equal to the height (because it is not efficient
+    to keep rank exactly equal to height).
+
+      - MAKE-SET(x): set rank of x to 0
+
+      - UNION(x,y): the node with higher rank is the new root and its rank
+        is unchanged; if the two nodes have the same rank, pick any one as
+        the new root and increase its rank by 1
+
+      - FIND-SET(x): use path compression and leave ranks unchanged (actual
+        height may change but time to update ranks would be too great)
+
+    It is possible to prove that the worst-case time for a sequence of m
+    operations, where there are n MAKE-SETs, is O(m log* n) -- for all
+    practical purposes, roughly O(m).
+    (The textbook proves a slightly different but essentially equivalent
+    bound in Theorem 21.14.)
+
+    
+    What is this log* function? It is a very very slow growing function.
+    log* (n) = {  0  for  0 <= n <= 2
+                  1  for  n = 3
+                  2  for  4 <= n <= 7
+                  3  for  8 <= n <= 2047
+                  4  for  2048 <= n <=  k  }
+
+     where we can show that k is at least 10^{80}.
+
+    How big is 10^{80}? It is larger than the estimated number of atoms 
+    in the observable universe.  So for all practical purposes (any graph for
+    which we want the minimum spanning tree), log*(n) is either 3 or 4.  
+

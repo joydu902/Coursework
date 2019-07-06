@@ -1,0 +1,46 @@
+class Bookshelf:
+    def __init__(self, limit: int) -> None:
+        self.limit = limit
+        self.bookdeck = {}
+
+    def add_book(self, name: str, author: str) -> None:
+        if len(self.bookdeck) >= self.limit:
+            print("Cannot add book")
+        else:
+            self.bookdeck[name] = author
+
+    def take_off(self, name:str) -> None:
+        self.bookdeck.pop(name)
+
+    def get_books(self) -> list:
+        booklist = list(self.bookdeck.keys())
+        booklist.sort()
+        return booklist
+
+    def getby_author(self, author) -> list:
+        booklist = []
+        for book in self.bookdeck:
+            if self.bookdeck[book] == author:
+                booklist.append(book)
+        return booklist
+
+if __name__ == '__main__':
+    a = Bookshelf(3)
+    a.add_book("happy", "joy")
+    a.add_book("jj", ' jeff')
+    print(a.get_books())
+    a.add_book("aa", "joy")
+    print(a.getby_author("joy"))
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,204 @@
+from typing import List
+from adts import Container, Queue, Stack
+
+
+def list_container(lst: List[int], c: Container) -> None:
+    """
+    Empty out c according to the algorithm from lecture after filling it with
+    items from lst.
+
+    When c is a Stack, the elements of lst should be printed in reverse order.
+    When c is a Queue, the elements of lst should be printed out in level order.
+
+    Precondition: c is empty.
+
+    >>> lst = [1, [[[2], 3]], [4, [5]]]
+    >>> list_container(lst, Stack())
+    5
+    4
+    3
+    2
+    1
+    >>> list_container(lst, Queue())
+    1
+    4
+    3
+    5
+    2
+    """
+    for item in lst:
+        c.add(item)
+    while not c.is_empty():
+        removed = c.remove()
+        if not isinstance(removed, list):
+            print(removed)
+        if isinstance(removed, list):
+            for num in removed:
+                c.add(num)
+
+    # for item in lst:
+    #     c.add(item)
+    #
+    # while not c.is_empty():
+    #     remove_item = c.remove()
+    #     if not isinstance(remove_item, list):
+    #         print(remove_item)
+    #     else:
+    #         for sub in remove_item:
+    #             c.add(sub)
+
+
+
+
+def list_nestedness(lst: List[int], q: Queue) -> List[List[int]]:
+    """
+    Return a list of elements of lst in each level of nestedness using q.
+
+    Precondition: q is empty.
+                  lst contains only ints.
+
+    >>> lst = [1, [[[2], 3]], [4, [5]]]
+    >>> list_nestedness(lst, Queue())
+    [[1], [4], [3, 5], [2]]
+
+    """
+
+    for item in lst:
+        q.add(item)
+    level = []
+    all_levels = []
+    q.add("End")
+
+    while not q.is_empty():
+        num = q.remove()
+        if num == "End":
+            all_levels.append(level)
+            level = []
+            if not q.is_empty():
+                q.add("End")
+        elif not isinstance(num, list):
+            level.append(num)
+        elif isinstance(num, list):
+            for item in num:
+                q.add(item)
+    return all_levels
+
+class StackQueue(Container):
+    def __init__(self):
+        self._add_to = Stack()
+        self._remove_from = Stack()
+
+    def add(self, value: object) -> None:
+        """
+        Add value to this StackQueue.
+
+        >>> q = StackQueue()
+        >>> q.add(5)
+        >>> q.add(3)
+        >>> q.remove()
+        5
+        >>> q.remove()
+        3
+        """
+        # Simply add to self._add_to for add()
+        self._add_to.add(value)
+
+
+    def is_empty(self):
+        return self._add_to.is_empty()
+
+    def remove(self) -> object:
+        """
+        Remove the item at the front of this StackQueue.
+
+        >>> q = StackQueue()
+        >>> q.add(5)
+        >>> q.add(3)
+        >>> q.remove()
+        5
+        >>> q.remove()
+        3
+        """
+        while not self._add_to.is_empty():
+            # Add the item removed into self._remove_from
+            self._remove_from.add(self._add_to.remove())
+
+            # We remove from self._remove_from to get the 'first item' in our Queue
+        return_value = self._remove_from.remove()
+
+        # And then we put self._add_to back in its original order sans that
+        # first item (e.g. empty our self._remove_from into self._add_to)
+
+        # Empty our self._remove_from
+        while not self._remove_from.is_empty():
+            # Add the item removed into self._add_to
+            self._add_to.add(self._remove_from.remove())
+
+        return return_value
+
+    def queue_to_stack(q: Queue) -> Stack:
+        """
+        Return a stack with the items from q. The stack returned should
+        Have items removed in the same order as q.
+
+        After calling this function, q should be in its original state (all
+        Items in the same order).
+
+        >>> q = Queue()
+        >>> q.add(1)
+        >>> q.add(2)
+        >>> q.add(3)
+        >>> s = queue_to_stack(q)
+        >>> q.remove()
+        1
+        >>> s.remove()
+        1
+        >>> q.remove()
+        2
+        >>> s.remove()
+        2
+        >>> q.remove()
+        3
+        >>> s.remove()
+        3
+        """
+        s = Stack()
+        contents = []
+
+        while not q.is_empty():
+            contents.append(q.remove())
+
+        for item in contents:
+            q.add(item)
+
+        contents.reverse()
+        for item in contents:
+            s.add(item)
+
+        return s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

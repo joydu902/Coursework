@@ -1,0 +1,36 @@
+class Bookshelf:
+    def __init__(self, limit: int) -> None:
+        self.limit = limit
+        self.book = {}
+
+    def add_book(self, name, author):
+        if len(self.book.keys()) < self.limit:
+            self.book[name] = author
+
+    def booksalpha(self):
+        books = list(self.book.keys())
+        books.sort()
+        return books
+
+    def remove_book(self, name):
+        self.book.pop(name)
+
+    def findbyauthor(self, author: str) -> list:
+        author_list= []
+        for i in self.book:
+            if self.book[i]== author:
+             author_list.append(i)
+        return author_list
+
+if __name__ == '__main__':
+    b = Bookshelf(3)
+    print(b.limit)
+    b.add_book("Cinderella", "Brothers Grimm")
+    b.add_book("Snow White", "Brothers Grimm")
+    b.add_book("Rapunzel", "Brothers Grimm")
+    print(b.book)
+    print(b.booksalpha())
+    b.remove_book("Cinderella")
+    print(b.book)
+    print(b.findbyauthor("Brothers Grimm"))
+

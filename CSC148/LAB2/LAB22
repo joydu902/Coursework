@@ -1,0 +1,75 @@
+class Clothes:
+    def __init__(self, brand: str, colour: str, price: float) -> None:
+        self._brand =  brand
+        self._colour = colour
+        self._price = price
+
+    def get_brand(self) -> str:
+         return self._brand
+
+    def set_brand(self, brand: str) -> None:
+        self._brand = brand
+
+    def get_colour(self) -> str:
+        return self._colour
+
+    def set_colour(self, colour: str) -> None:
+        self._colour = colour
+
+    def get_price(self) -> float:
+        return self._price
+
+    def set_price(self, price: float) -> None:
+        self._price = price
+
+class Closets:
+    def __init__(self) -> None:
+        self._content =[]
+
+    def add(self, clothe: Clothes) -> None:
+        self._content.append(clothe)
+
+    def take_clothes(self, colour: str) -> list:
+        s =[]
+        for c in self._content:
+            if c.get_colour() == colour:
+                s.append(c)
+        return s
+
+class Person:
+    def __init__(self, money: float) -> None:
+        self._money = money
+        self._clothess = []
+        self._closets = Closets()
+
+    def add(self, clothe: Clothes) -> None:
+        self._clothess.append(clothe)
+
+
+
+
+
+
+# class Person:
+#
+#
+# class Employee(Person):
+#
+# class ClothingContainer:
+#     def __init__(self) -> None:
+#         self._clothes = {}
+#
+#     def remove(self, clothe) -> None:
+#         pass
+#
+#     def provide_colour(self, colour) -> list:
+#         pass
+#
+# class Store(ClothingContainer):
+#     def remove(self, clothe) -> None:
+#         pass
+#
+#
+# class Closet(ClothingContainer):
+#     def remove(self, clothe) -> None:
+#         pass

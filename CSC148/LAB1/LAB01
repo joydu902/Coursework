@@ -1,0 +1,67 @@
+class ShopCatalogue:
+    def __init__(self, store:str) -> None:
+        """
+        >>> s = ShopCatalogue("UofT")
+        >>> s.store
+        'UofT'
+        >>> s.products
+        {}
+
+        :param store:
+        """
+
+        self.store = store
+        self.products = {}
+
+    def add_item(self, name:str, price: float, amount: int) -> None:
+
+        if name not in self.products:
+            self.products[name] = [price, amount]
+        else:
+            self.products[name][1] = amount + self.products[name][1]
+
+    def remove_item(self, name, amount) -> None:
+        if self.products[name][1] <= amount:
+            self.products.pop(name)
+        else:
+            self.products[name][1] -= amount
+
+    def get_items_below(self, limit: float) -> list:
+        belows=[]
+        for item in self.products:
+            if self.products[item][0] < limit:
+                belows.append(item)
+        return belows
+
+    def __str__(self) -> str:
+        s = []
+        for item in self.products:
+            price = self.products[item][0]
+            amount = self.products[item][1]
+            s.append("{} (x{}) for {:.2f} each".format(item, amount, price))
+
+        s1 = ", ".join(s)
+        s2 = "{} has: {}".format(self.store, s1)
+        return(s2)
+
+
+
+if __name__ == '__main__':
+    s = ShopCatalogue("UofT Bookstore")
+    s.add_item("Chips", 0.99, 3)
+    assert str(s) == "UofT Bookstore has: Chips (x3) for 0.99 each"
+    s.add_item("Chips", 0.99, 10)
+    assert str(s) == "UofT Bookstore has: Chips (x13) for 0.99 each"
+    s.add_item("Pencil", 2.50, 3)
+    assert str(s) == "UofT Bookstore has: Chips (x13) for 0.99 each, Pencil (x3) for 2.50 each"
+    s.remove_item("Pencil", 2)
+    assert str(s) == "UofT Bookstore has: Chips (x13) for 0.99 each, Pencil (x1) for 2.50 each"
+    s.remove_item("Pencil", 1)
+    assert str(s) == "UofT Bookstore has: Chips (x13) for 0.99 each"
+    s.add_item("Pop", 1.95, 3)
+    s.add_item("Pencil", 2.50, 2)
+    assert s.get_items_below(2.00) == ['Chips', 'Pop']
+
+
+
+

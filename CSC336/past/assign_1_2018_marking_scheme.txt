@@ -1,0 +1,126 @@
+
+
+
+				Assignment 1
+
+			Marking Scheme and TA Comments
+
+General Comments
+
+There is a number in the top right corner of your assignment to help 
+your TAs sort your assignments alphabetically. Please put this number on 
+the top right corner of the first page of all your other assignments for 
+this course.
+
+Make sure to hand in all Matlab code (print out your .m files).
+
+All code and its exact output should be neatly printed and presented.
+
+
+------------------------------------------------------
+
+
+Questions 1 and 2
+
+I just wrote comments on each student's assignment if they got something wrong.
+
+A very common problem for the first problem was they got the signs wrong.
+They would do Error = True - Approximate / True
+
+Another common issue on problem 1 was that they used the rounded answer
+from part A as the numerator in part B.
+
+For the second problem, the only error that seemed to crop up frequently
+was a rounding error on part (i). They would round the answer from 
+-0.008...  x 10^-10 to 0.
+
+
+------------------------------------------------------
+
+
+Question 3 
+
+The followings are some common mistakes that students made.
+
+(a1) Some students computed conditioned number by 
+       ( y - \tilde{y})/y ) / ( (x - \tilde{x})/x ) 
+     with some example numbers.  This should belong to part (b). 
+     If they still get the correct conclusions, -2 points.
+
+(a2) Some student got the correct condition number equation
+       xf'(x)/ f(x) 
+     But they didn't try to determine its limit when x -> pi/2.
+     They used example numbers close to pi/2 to show that it is ill-conditioned.      In this case, -1 point.
+
+(a3) Some students didn't use xf'(x)/f(x). They based their conclusions on 
+     the shape of tan(x). If they got the correct conclusions, -3 points.
+
+(b1) If a student just showed the results for tan(\tilde(x)) or tan(x), 
+     -2 points.
+
+(b2) If a student showed the absolute error or relative error, -1 point. 
+     They need one more step: the condition number is the approximates
+     the relative error in y divided by the relative error in x.
+
+(b3) If a student took x = 0 or pi/2 (in which case, the denominator will be 
+     zero), -3 points.
+
+(b4) If a student computed the condition number by xf'(x) / f(x), -2 points. 
+     We have already discussed this equation in part (a).
+ 
+
+
+------------------------------------------------------
+
+
+Question 4
+
+If you see a C1, C2, C3, C4  or C5 on your assignment, they mean the
+following:
+
+
+C1: Your solution must be a general solution, not specific to the 
+    software/language
+
+C2: Wrong! See the solution later
+
+C3: Although you have found the reason for the error correctly, your 
+    solution to remedy it either does not work or is not efficient and/or 
+    applicable.
+
+C4: Do not use vpa command. See C1.
+
+C5: It must be (x/y)^2 not x^2/y^2
+
+
+
+
+------------------------------------------------------
+
+
+Question 5 
+
+parts a) and c)
+
+  - almost all students called factorial(k) and computed x^k on the k'th 
+    iteration of the loop instead of accumulating their values (no marks off)
+  
+  - many students did not reuse exp1 in their answer for exp2 (no marks off)
+  
+  - many students' output was not formatted as a table (1 mark off)
+  
+  - some students' numbers were not appropriately formatted in their outputs 
+      - either x was printed as a float, or 
+      - the significant digits of the relative error were not displayed 
+        (1 mark off)
+
+part b)
+
+  - most students identified the ranges where exp1 worked well and where 
+    it didn't
+
+  - not enough detail given in explanation of why the relative error grew 
+    as x became more negative and why it was small when x > 0 
+    (1-3 marks off depending on what was said exactly)
+
+

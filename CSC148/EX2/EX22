@@ -1,0 +1,135 @@
+class Person:
+    def __init__(self, name) -> None:
+        self._eats = []
+        self._name = name
+
+    def eat(self, food: str) -> None:
+        self._eats.append(food)
+
+    def get_eaten_food(self) -> list:
+        return self._eats
+
+    def change_name(self, new_name) -> None:
+        self._name = new_name
+
+    def __eq__(self, other) -> bool:
+        return self._name == other._name and self.get_eaten_food() == other.get_eaten_food()
+
+    def __str__(self) -> str:
+        if type(self) != Student:
+            return "{} is a Person who has eaten {} thing(s).".format(self._name,len(self.get_eaten_food()))
+
+class Student(Person):
+    def __init__(self, name) -> None:
+        super().__init__(name)
+        self._course_list = []
+
+    def __str__(self) -> str:
+        if type(self) == Student:
+            return "{} is a Student who has eaten {} thing(s).".format(self._name, len(self.get_eaten_food()))
+
+    def add_course(self, course_name: str) -> None:
+        self._course_list.append(course_name)
+
+    def get_courses(self) -> list:
+        return self._course_list
+
+class Course:
+    def __init__(self, course_name:str) -> None:
+        self._course_name = course_name
+        self._student_list = []
+
+    def add_student(self, student: Student) -> None:
+        self._student_list.append(student)
+        student.add_course(self._course_name)
+
+    def __str__(self) -> str:
+        ss = ''
+        for student in self._student_list:
+            ss += "\n{} is a Student who has eaten {} thing(s).".format(student._name, len(student.get_eaten_food()))
+        return "{} Student log:{}".format(self._course_name, ss)
+
+
+
+
+
+
+if __name__ == '__main__':
+    s = Student("Sophia")
+    p = Person("Jen")
+
+    # A Student should be a Person, but a Person should not be a Student
+    assert isinstance(s, Person), "A Student should also be a Person"
+    assert not isinstance(p, Student), "A Person should not be a Student"
+
+    s.eat("Cupcake")
+    s.eat("Apple")
+
+    # get_eaten_food() should return a list of foods in the order they were
+    # eaten
+    expected = ("s.get_eaten_food() returned {} instead " +
+                "of ['Cupcake, 'Apple']").format(s.get_eaten_food())
+    assert s.get_eaten_food() == ['Cupcake', 'Apple'], expected
+
+    p.eat("Cupcake")
+    p.eat("Apple")
+
+    expected = ("p.get_eaten_food() returned {} instead " +
+                "of ['Cupcake, 'Apple']").format(s.get_eaten_food())
+    assert p.get_eaten_food() == ['Cupcake', 'Apple'], expected
+
+    assert p != s, ("A Person should only be equal to another object if they" +
+                    " have the same name and eaten foods.")
+
+    p.change_name("Sophia")
+
+    assert p == s, ("A Person should be equal to another object if they" +
+                    " have the same name and eaten foods.")
+    assert s == p, ("A Student should be equal to another object if they" +
+                    " have the same name and eaten foods.")
+
+    error = ("str(p) was expected to return\nSophia is a Person who has " +
+             "eaten 2 thing(s).\nBut got\n{}\ninstead.").format(str(p))
+
+    assert str(p) == "Sophia is a Person who has eaten 2 thing(s).", error
+
+    error = ("str(s) was expected to return\nSophia is a Student who has " +
+             "eaten 2 thing(s).\nBut got\n{}\ninstead.").format(str(s))
+    assert str(s) == "Sophia is a Student who has eaten 2 thing(s).", error
+
+    c = Course("CSC148")
+    c.add_student(s)
+
+    # Assume that get_courses() returns a list in the order that the
+    # courses were added
+    expected = ("After adding a Student to a Course, that Student should " +
+                "have that course in the list returned by get_courses but " +
+                "got {} instead.").format(s.get_courses())
+    assert s.get_courses() == ["CSC148"], expected
+
+    assert s == p, ("After adding a course to a Student, that Student should " +
+                    "be equal to a Person with the same foods eaten and name.")
+    assert p == s, ("After adding a course to a Student, that Person should " +
+                    "be equal to a Student with the same foods eaten and name.")
+
+    assert not getattr(p, 'get_courses', None), ("Person should not have a " +
+                                                 "get_courses() method.")
+
+    expected = ("When printing a Course, the string\n" +
+                "CSC148 Student log:\nSophia is a Student " +
+                "who has eaten 2 thing(s).\nWas expected" +
+                ", but we got\n{}\ninstead").format(str(c))
+    assert str(c) == ("CSC148 Student log:\nSophia is a Student " +
+                      "who has eaten 2 thing(s)."), expected
+
+    s2 = Student("Jacqueline")
+    c.add_student(s2)
+
+    expected = ("When printing a Course, the string\n" +
+                "CSC148 Student log:\nSophia is a Student " +
+                "who has eaten 2 thing(s).\nJacqueline " +
+                "is a Student who has eaten 0 thing(s).\nWas expected" +
+                ", but we got\n{}\ninstead").format(str(c))
+    assert str(c) == ("CSC148 Student log:\nSophia is a Student " +
+                      "who has eaten 2 thing(s).\nJacqueline is a Student " +
+                      "who has eaten 0 thing(s)."), expected

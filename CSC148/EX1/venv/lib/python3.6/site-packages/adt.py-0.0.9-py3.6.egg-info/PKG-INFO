@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: adt.py
+Version: 0.0.9
+Summary: Tagged union types and immutable records (product types)
+Home-page: https://github.com/ericgj/adt.py
+Author: Eric Gjertsen
+Author-email: ericgj72@gmail.com
+License: MIT
+Description: UNKNOWN
+Keywords: adt types immutable functional
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Utilities

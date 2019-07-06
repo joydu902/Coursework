@@ -1,0 +1,155 @@
+---
+title:  Assignment  2
+author: |
+  | Last name: Du
+  | First name: Min
+  | Student ID: 1002602230
+  | Course section: STA302H1F-Summer 2017
+date: 'Due Date: June 3, 2017, 23:00'
+output: pdf_document
+header-includes: \usepackage{color,amsmath}
+fontsize: 10pt
+---
+
+
+
+# \textcolor{red}{ Q1 (20 pts) - Correlation and SLR.} 
+Q1-(a) (6 pts): Find the correlation between percentage of field goals made and percentage of fields goals made in the previous year. Is this estimated correlation significant different from zero ? Explain how this result supports the claim in The New York Times article.
+
+\textbf{Answer: } 
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+a3 = read.csv("/Users/Joy/Desktop/STA302/A3/A3 JOY DATA.csv",header=TRUE)
+
+lm_fit1 = lm(a3$DEATH.RATE ~ a3$AVP)
+summary(lm_fit1)
+
+plot(a3$DEATH.RATE ~ a3$AVP)
+abline(lm_fit1)
+
+```
+
+No, It is not significant different from zero. The correlation between percentage of field goals made and percentage of fields goals made in the previous year is -0.1391, which is close to 0, very weak and alomst neligible. According to the above code, $H_0$:The correlation between percentage of field goals made and percentage of fields goals made in the previous year is 0. P-value = 0.2305, which is greater than $\alpha$ = 0.05, so we do not reject $H_0$, no evidence to show that there is correlation between percentage of field goals made and percentage of fields goals made in the previous year.
+
+
+\textcolor{blue}{Q1-(b) (8 pts): Carry out a simple linear regression using the variables percentage of fields goals made this year and percentage of field goals made in the previous year.}
+
+\textbf{Answer: } 
+
+
+List of table                      | results
+:----------------------------------|:-----------------:|
+$R^2$  | 0.01937
+intercept, $b_0$ | 94.6098
+slope, $b_1$ | -0.1510
+estimate of $\sigma^2$ | 0.0156
+P-value for $H_0: \beta_0=0$ | 6.18e-14
+P-value for $H_0: \beta_1=0$ | 0.23
+
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+# code 
+lm_fitt = lm(a2$FGt ~ a2$FGtM1)
+summary(lm_fitt)
+```
+
+
+Using T-test, $t^*$ = -1.209, p-value=2P[T>|$t^*$|] = 0.230512, which is greater than $\alpha$ = 0.05. Therefore, we do not reject $H_0$, no evidence to show that the percentage of fields goals made this year and percentage of field goals made in the previous year have linear association.
+
+
+
+\textcolor{blue}{Q1-(c) (6 pts): Give a 95\% confidence interval for the slope of the regression line in Q1-(b). Explain how the confidence interval is consistent with the conclusions of Q1-(a) and Q1-(b).}
+
+\textbf{Answer:} 
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+# code 
+confint(lm_fitt, level=0.95)
+```
+
+95\% confidence interval for the slope of the regression line is [-0.3997189, 0.09780225], 0 is contained in this confidence interval. Therefore, we do not reject $H_0$, no evidence to show that the percentage of fields goals made this year and percentage of field goals made in the previous year have linear association.
+
+
+
+
+
+\newpage
+
+# \textcolor{red}{ Q2 (5 pts)} 
+\textcolor{blue}{
+Conclusions from regression analysis are valid only if the right model was fit to the data. Why is the regression model fit in Q1-(b) not an appropriate model? In particular, you should consider how it violates the Gauss-Markov conditions. You do not need to look at plots of the residuals for this question. Instead comment on the Gauss- Markov conditions in the context of the data being considered.
+}
+
+
+\textbf{Answer: Firstly, according to Gauss-Markov assumption,var($\epsilon_i$)= $\sigma^2$ when it is a constant, However, in this problem var($\epsilon_i$) is not a constant, because the error term is between different people's percentage of fields goals made this year and percentage of field goals made in the previous years. Secondly, for cov($\epsilon_i$,$\epsilon_j$) = 0, which means the correlation between two points should be equal to 0. In this problem, It can be understood as cov($Y_i$,$Y_j$) = 0, which means the correlation between two people's percentage of field goals this year and last year should be equal to 0. However, the first 4 names from a2 are the same, there must exist relationship between the same people's percentage of field goals, the correlation between last year and this year on the same person do not equal to 0. Thirdly, according to data, for each person, we can find four different percentage of fields goals made in previous year and this year, which violate the assumption that x,y in linear model is one to one. The above three problems violate Gauss-Markov condition. So the regression model fit in Q1-(b) is not an appropriate model.} 
+
+
+
+
+
+
+
+\newpage
+
+# \textcolor{red}{ Q3 (10 pts)} 
+\textcolor{blue}{Q3-(a): 
+In 2003, Mike Vanderjagt had the highest percentage of field goals made (100\%) and Jay Feely had the lowest percentage (70.3\%). For each of these two players, carry out a regression to examine the relationship between the percentage of fields goals made in a year and the percentage of field goals made in the previous year. (Note that this is 2 regressions, each using only 4 data points.) What do you conclude ?
+}
+
+
+\textbf{Answer: For Mike Vanderjagt, using T-test to find the relationship between the percentage of fields goals made in a year and the percentage of field goals made in the previous year. From the code shown below, $t^*$ = -4.437, p-value=2P[T>|$t^*$|] = 0.047226, which is smaller than $\alpha$ = 0.05, so we reject $H_0$, we have evidence to show that the Mike Vanderjagt 's percentage of fields goals made in a year and the percentage of field goals made in the previous year have linear association. 
+For Jay Feely, we also use T-test to find whether there exists relationship between the percentage of fields goals made in a year and the percentage of field goals made in the previous year. From the code shown below, $t^*$ = -0.407, p-value=2P[T>|$t^*$|] = 0.723433, which is significantly greater than $\alpha$ = 0.05, so we do not reject $H_0$, we have no evidence to show that the Mike Vanderjagt 's percentage of fields goals made in a year and the percentage of field goals made in the previous year have linear association.}  
+
+
+Player | Estimate of slope ($b_1$) | p-value for test with $H_0: \beta_1=0$|  estimate $\sigma^2(b_1)$
+:--------------|:-----------------:|:----------------:|:--------------:|
+Mike Vanderjagt | -0.8 |0.04724 | 0.0325
+Jay Feeley      | -0.2686 |0.724| 0.4364
+
+
+
+```{r,echo=T, eval=T,cache=T, message=F,warning=F}
+# Example: run a SLR for name="David Akers"
+DA =lm(FGt~FGtM1, data=a2[a2$Name=="David Akers",])
+summary(DA)
+# For MV = Mike Vanderjagt# S{b0} =1
+MV =lm(FGt~FGtM1, data=a2[a2$Name=="Mike Vanderjagt",])
+summary(MV)
+# For JF = Jay Feely
+JF =lm(FGt~FGtM1, data=a2[a2$Name=="Jay Feely",])
+summary(JF)
+```
+
+
+
+\textcolor{blue}{Q3-(b): 
+We can test for a difference between the slopes of the regressions for Mike Vanderjagt and Jay Feely using a t-test, similar to the two-sample t-test for the difference between two means. We can estimate the difference in their slopes by $b_{1,MV} - b_{1,JF}$ where $b_{1,MV}$ and $b_{1,JF}$ are the estimated slopes for Mike Vanderjagt and Jay Feely, respectively. You also need to find an estimate of the standard deviation of $b_{1,MV} - b_{1,JF}$. Under the regression model assumptions and assuming that there is no difference in the slopes, the estimate of the difference in slopes divided by the estimate of the standard deviation of the differences will have approximately a t- distribution with 2 degrees of freedom (using Satterthwaite's approximation). What do you conclude from this t-test ? (To estimate the p-value, you can use a t-table.)
+}
+
+
+\textbf{Answer: We want to test the difference between the slopes of the regressions for Mike Vanderjagt and Jay Feely, so we set $H_0$:$\beta_{1,MV}$=$\beta_{1,JF}$, $H_1$:$\beta_{1,MV}$-$\beta_{1,JF}$!=0. From the above code, $b_{1,MV}$=-0.8000, $b_{1,JF}$= -0.2686, so the difference in their slopes is $b_{1,MV} - b_{1,JF}$= -0.5314. The standard deviation of $b_{1,MV} - b_{1,JF}$ = sqrt(var$(b_{1,MV})+var(b_{1,JF})$)= sqrt($s^2${$b_{1,MV}$}+$s^2${$b_{1,JF}$})= 0.6848, t = ${b_{1,MV} - b_{1,JF}}-0/sqrt(var(b_{1,MV} - b_{1,JF}))$ = -0.776. According to T-table, p-value= 2P[T>|$t^*$|]=0.5189, which is greater than $\alpha$=0.05. Therefore, we do not reject $H_0$, we have no evidence to show that there are difference between the slopes of the regressions for Mike Vanderjagt and Jay Feely.} 
+
+
+
+
+
+\newpage 
+
+# \textcolor{red}{ Q4 (10 pts)} 
+R output from a multiple regression is given next page. This regression uses all the data, but fits 19 separate lines, one for each player. In this regression, the lines were forced to be parallel so the coefficient of FGtM1, the percentage of field goals made in the previous year, is the same for all players.
+
+\textcolor{blue}{ 
+Q4-(a): (5 points) Find the p-value for the test with null hypothesis that the coefficient of FGtM1 is equal to 0. What do you conclude about the relationship between field goals made this year and percentage of field goals made the previous year ?
+}
+
+\textbf{Answer: P-value for the test with null hypothesis that the coefficient of FGtM1 is equal to 0 is 0.0003849, which is smaller than $\alpha$=0.05, so we reject $H_0$, we have evidence to show that the coefficient of FGtM1 does not equal to 0.  } 
+
+
+
+
+
+
+\textcolor{blue}{
+Q4-(b): (5 points) Explain, in words, why the test considered in part Q4-(a) is more powerful than the tests about the slopes considered in Q3-(a).
+}
+
+\textbf{Answer: Q3-(a) put 2 groups of data together, Q4-(a) uses indicated variable to foucus on each players' data, so Q4-(a) is more accurate and more powerful. } 
