@@ -1,2 +1,2 @@
 # readme
-JOY DU
+JOY DU's coursework
