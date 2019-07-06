@@ -1,0 +1,18 @@
+def earlier_name(name1,name2):
+    if name1 > name2:
+        return name2
+    elif name1 <= name2:
+        return name1
+def ticket_price(age):
+    if age >= 65:
+        return 4.75
+    elif age <= 12:
+        return 4.25
+    else:
+        return 7.50
+def format_name(first,last):
+    if len(last) > 0:
+        return last + "," + first
+    else:
+        return first
+    
